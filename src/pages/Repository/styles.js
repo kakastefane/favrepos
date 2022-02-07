@@ -86,3 +86,52 @@ export const Topics = styled.div`
     border-radius: 1rem;
   }
 `;
+
+export const IssuesList = styled.ul`
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  list-style: none;
+
+  li {
+    padding: 1rem;
+    background-color: var(--color-light);
+    border-radius: .5rem;
+  }
+`;
+export const IssueAuthor = styled.div`
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .75rem;
+
+  img {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 1rem;
+  }
+`;
+export const IssueTitle = styled.h3`
+  margin: 0;
+  padding: .5rem 0;
+  font-size: 1rem;
+  a {
+    color: var(--color-dark);
+    text-decoration: none;
+  }
+`;
+export const IssueLabels = styled.div`
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+
+  span {
+    display: flex;
+    padding: .3rem .5rem;
+    background-color: var(--color-text);
+    color: var(--color-white);
+    font-size: .75rem;
+    border-radius: 1rem;
+  }
+`;

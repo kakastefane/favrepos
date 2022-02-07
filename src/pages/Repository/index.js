@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { About, BackButton, Container, Loading, Owner, RepoInfos, Title, Topics } from './styles';
+import { About, BackButton, Container, IssueAuthor, IssueLabels, IssuesList, IssueTitle, Loading, Owner, RepoInfos, Title, Topics } from './styles';
 
 import { FaArrowLeft } from 'react-icons/fa';
 
@@ -65,6 +65,25 @@ export default function Repository({ match }) {
           ))}
         </Topics>
       </RepoInfos>
+
+      <IssuesList>
+        {issues.map(issue => (
+          <li key={issue.id}>
+            <IssueAuthor>
+              <img src={issue.user.avatar_url} alt={issue.user.login} />
+              {issue.user.login}
+            </IssueAuthor>
+            <IssueTitle>
+              <a href={issue.html_url} target="_blank" rel="noreferrer">{issue.title}</a>
+            </IssueTitle>
+            <IssueLabels>
+              {issue.labels.map(label => (
+                <span key={label.id}>{label.name}</span>
+              ))}
+            </IssueLabels>
+          </li>
+        ))}
+      </IssuesList>
     </Container>
   )
 }
