@@ -7,7 +7,7 @@ import { Container, Title, Text } from './styles'
 export default function Credits() {
   return (
     <Container>
-      <Title>
+      <Title to="/">
         <FaGithub size={32} />
         FavRepos
       </Title>
