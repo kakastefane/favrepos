@@ -21,9 +21,9 @@ export const Form = styled.form`
     height: 3rem;
     border-radius: 1.5rem;
     padding: 0 1.5rem;
-    border: 1px solid var(--color-light);
+    border: 2px solid ${props => (props.error) ? 'var(--color-error)' : 'var(--color-light)'};
     background-color: var(--color-light);
-    transition: background-color .3s;
+    transition: background-color .3s, border-color .3s;
 
     &:focus {
       background-color: var(--color-light-alt);
@@ -42,7 +42,7 @@ const animateSpinner = keyframes`
 
 export const ButtonSubmit = styled.button.attrs(props => ({
   type: 'submit',
-  disabled: props.loading,
+  disabled: props.loading
 }))`
   width: 3rem;
   height: 3rem;
@@ -58,6 +58,10 @@ export const ButtonSubmit = styled.button.attrs(props => ({
   &[disabled] {
     cursor: not-allowed;
   }
+
+  &:hover {
+    background-color: var(--color-dark-var);
+  }
   
   ${props => props.loading &&
     css`
@@ -65,10 +69,6 @@ export const ButtonSubmit = styled.button.attrs(props => ({
         animation: ${animateSpinner} 2s linear infinite;
       }
     `
-  }
-
-  &:hover {
-    background-color: var(--color-dark-var);
   }
 `;
 
@@ -124,10 +124,16 @@ export const RepoFooter = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+`;
 
-  .date {
-    font-size: .75rem
-  }
+export const LastUpdate = styled.span`
+  font-size: .75rem
+`;
+
+export const Buttons = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 
   a {
     display: flex;
@@ -148,5 +154,29 @@ export const RepoFooter = styled.div`
     svg {
       font-size: 1rem;
     }
+  }
+`;
+
+export const DeleteButton = styled.button.attrs({
+  type: 'button',
+})`
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem 1rem;
+  background-color: var(--color-error);
+  border-radius: 1.5rem;
+  font-size: .75rem;
+  border: none;
+  color: var(--color-light-var);
+  text-decoration: none;
+  transition: background-color .3s;
+
+  &:hover {
+    background-color: var(--color-error-var);
+  }
+
+  svg {
+    font-size: 1rem;
   }
 `;

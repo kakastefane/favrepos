@@ -1,25 +1,51 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 import { format, parseISO } from 'date-fns';
 
-import { FaPlus, FaSpinner, FaStar } from 'react-icons/fa';
-import { Container, Form, ButtonSubmit, List, RepoAuthor, RepoHeader, ListItem, RepoStars, RepoDescription, RepoFooter } from './styles'
+import { FaPlus, FaSpinner, FaStar, FaEye, FaTrash } from 'react-icons/fa';
+import { Container, Form, ButtonSubmit, List, RepoAuthor, RepoHeader, ListItem, RepoStars, RepoDescription, RepoFooter, Buttons, DeleteButton, LastUpdate } from './styles'
 
 import api from '../../services/api';
+import { Link } from 'react-router-dom';
 
 export default function Main() {
   const [newRepo, setNewRepo] = useState('');
   const [repositories, setRepositories] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState(null);
+
+  //get repos in localstorage
+  useEffect(() => {
+    const repoStorage = localStorage.getItem('repos');
+    if (repoStorage) {
+      setRepositories(JSON.parse(repoStorage));
+    }
+  }, []);
+
+  //save repos in localstorage
+  useEffect(() => {
+    localStorage.setItem('repos', JSON.stringify(repositories));
+  }, [repositories]);
 
   const handleSubmit = useCallback((e) => {
     e.preventDefault();
 
     async function submit() {
       setLoading(true);
+      setAlert(null);
 
       try {
+        if (newRepo === '') {
+          throw new Error('You need indicate a repository name!');
+        }
+
         const response = await api.get(`repos/${newRepo}`);
+
+        const hasRepo = repositories.find(repo => repo.fullName === newRepo);
+        if (hasRepo) {
+          throw new Error('This repository already exists!');
+        }
+
         const data = {
           id: response.data.id,
           name: response.data.name,
@@ -32,9 +58,11 @@ export default function Main() {
             login: response.data.owner.login
           }
         }
+
         setRepositories([...repositories, data]);
         setNewRepo('');
       } catch (error) {
+        setAlert(true);
         console.log(error);
       } finally {
         setLoading(false)
@@ -46,11 +74,17 @@ export default function Main() {
 
   function handleInputChange(e) {
     setNewRepo(e.target.value);
+    setAlert(null);
   }
+
+  const handleDeleteRepo = useCallback((repo) => {
+    const find = repositories.filter(r => r.id !== repo);
+    setRepositories(find);
+  }, [repositories]);
 
   return (
     <Container>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit} error={alert}>
 
         <input
           type="text"
@@ -86,12 +120,17 @@ export default function Main() {
               {repo.description}
             </RepoDescription>
             <RepoFooter>
-              <span className="date">
+              <LastUpdate>
                 Last update at {repo.lastUpdate}
-              </span>
-              <a href="/" title="More details">
-                More details
-              </a>
+              </LastUpdate>
+              <Buttons>
+                <DeleteButton onClick={() => handleDeleteRepo(repo.id)}>
+                  <FaTrash />
+                </DeleteButton>
+                <Link to={`/repository/${encodeURIComponent(repo.fullName)}`}>
+                  <FaEye />
+                </Link>
+              </Buttons>
             </RepoFooter>
           </ListItem>
         ))}

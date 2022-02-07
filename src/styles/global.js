@@ -11,6 +11,14 @@ export default createGlobalStyle`
   --color-dark-var: #40394A;
   --color-light-shadow: rgba(0,0,0,0.3);
 
+  --color-black: #000000;
+  --color-white: #FFFFFF;
+
+  --color-error: #e74c3c;
+  --color-error-var: #c0392b;
+  --color-success: #2ecc71;
+  --color-success-var: #27ae60;
+
   --color-text: #666666;
 
   --font-family: 'JetBrains Mono', sans-serif;
