@@ -204,3 +204,10 @@ export const FilterNavigation = styled.div`
     }
   }
 `;
+
+export const WithoutIssue = styled.h2`
+  font-size: 1.25rem;
+  color: var(--color-dark);
+  text-align: center;
+  margin-top: 3rem;
+`;
