@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { About, BackButton, Container, IssueAuthor, IssueLabels, IssuesList, IssueTitle, Loading, Owner, RepoInfos, Title, Topics } from './styles';
+import { About, BackButton, Container, FilterNavigation, IssueAuthor, IssueLabels, IssuesList, IssueTitle, Loading, Owner, PagesNavigation, RepoInfos, Title, Topics } from './styles';
 
-import { FaArrowLeft } from 'react-icons/fa';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 import api from '../../services/api';
 
@@ -10,6 +10,13 @@ export default function Repository({ match }) {
   const [repository, setRepository] = useState({});
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [filters, setFilters] = useState([
+    { state: 'all', label: 'All', active: true },
+    { state: 'open', label: 'Open', active: false },
+    { state: 'closed', label: 'Closed', active: false },
+  ]);
+  const [filterIndex, setFilterIndex] = useState(0);
 
   useEffect(() => {
 
@@ -20,7 +27,7 @@ export default function Repository({ match }) {
         api.get(`/repos/${repoName}`),
         api.get(`/repos/${repoName}/issues`, {
           params: {
-            state: 'open',
+            state: filters.find(f => f.active).state,
             per_page: 5
           }
         }),
@@ -34,7 +41,32 @@ export default function Repository({ match }) {
 
     load()
 
-  }, [match.params.repository]);
+  }, [match.params.repository, filters]);
+
+  useEffect(() => {
+
+    async function loadIssues() {
+      const repoName = decodeURIComponent(match.params.repository);
+      const response = await api.get(`/repos/${repoName}/issues`, {
+        params: {
+          state: filters[filterIndex].state,
+          page: page,
+          per_page: 5,
+        }
+      });
+      setIssues(response.data)
+    }
+    loadIssues();
+
+  }, [match.params.repository, page, filterIndex, filters]);
+
+  function handlePage(action) {
+    setPage(action === 'prev' ? page - 1 : page + 1);
+  };
+
+  function handleFilter(index) {
+    setFilterIndex(index);
+  }
 
   if (loading) {
     return (
@@ -48,9 +80,11 @@ export default function Repository({ match }) {
 
   return (
     <Container>
+
       <BackButton to="/">
         <FaArrowLeft />
       </BackButton>
+
       <RepoInfos>
         <Title>{repository.name}</Title>
         <Owner>
@@ -65,6 +99,17 @@ export default function Repository({ match }) {
           ))}
         </Topics>
       </RepoInfos>
+
+      <FilterNavigation active={filterIndex}>
+        <h2>Issues</h2>
+        <span>
+          {filters.map((filter, index) => (
+            <button type="button" key={index} onClick={() => handleFilter(index)}>
+              {filter.label}
+            </button>
+          ))}
+        </span>
+      </FilterNavigation>
 
       <IssuesList>
         {issues.map(issue => (
@@ -84,6 +129,20 @@ export default function Repository({ match }) {
           </li>
         ))}
       </IssuesList>
+
+      <PagesNavigation>
+        <button
+          type="button"
+          onClick={() => handlePage('prev')}
+          disabled={page < 2}>
+          <FaArrowLeft /> Previous
+        </button>
+        <button
+          type="button"
+          onClick={() => handlePage('next')}>
+          Next <FaArrowRight />
+        </button>
+      </PagesNavigation>
     </Container>
   )
 }

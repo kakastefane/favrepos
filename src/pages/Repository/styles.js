@@ -135,3 +135,72 @@ export const IssueLabels = styled.div`
     border-radius: 1rem;
   }
 `;
+
+export const PagesNavigation = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2rem;
+
+  button {
+    border: none;
+    border-radius: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    font-size: .875rem;
+    padding: .5rem 1rem;
+    background-color: var(--color-dark);
+    color: var(--color-light);
+    transition: background-color .3s, opacity .3s;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: .5;
+    }
+
+    &:hover {
+      background-color: var(--color-dark-var);
+    }
+  }
+`;
+
+export const FilterNavigation = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 3rem;
+
+  h2 {
+    color: var(--color-dark);
+    font-size: 1.25rem;
+  }
+
+  span {
+    display: flex;
+    gap: .5rem;
+  }
+
+  button {
+    border: none;
+    border-radius: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    font-size: .875rem;
+    padding: .5rem 1rem;
+    background-color: var(--color-dark-var);
+    color: var(--color-light);
+    transition: background-color .3s;
+
+    &:hover {
+      background-color: var(--color-dark);
+    }
+
+    &:nth-child(${props => props.active + 1}) {
+      background-color: var(--color-dark);
+    }
+  }
+`;
